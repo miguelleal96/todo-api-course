@@ -51,15 +51,13 @@ describe('POST /todos', () => {
       .send({})
       .expect(400)
       .end((err, res) => {
-        if(err) {
-          return done(err)
-        }
-		  
-		  // assert if the todo was not added to the DB
-        Todo.find().then((todos) => {
-          expect(todos.length).toBe(2)
-          done()
-        }).catch(e => done(e))
+				if(err) return done(err)
+					
+				// assert if the todo was not added to the DB
+				Todo.find().then((todos) => {
+					expect(todos.length).toBe(2)
+					done()
+				}).catch(e => done(e))
       })
   })
 })
