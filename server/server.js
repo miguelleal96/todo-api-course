@@ -39,7 +39,7 @@ app.get('/todos/:id', (req, res) => {
     //404 - send back empty send
   if(!ObjectID.isValid(id)){
     //console.log('Id is not valid')
-    res.status(404).send()
+    return res.status(404).send()
   }
   //findById
     Todo.findById(id).then(todo => {
@@ -58,6 +58,29 @@ app.get('/todos/:id', (req, res) => {
       //console.log('promise failed')
       //console.log(e)
     })
+})
+
+app.delete('/todos/:id', (req, res) => {
+  // get the id
+  const id = req.params.id
+  // validate the id  -> not valid? return 404
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send()
+  }
+  // remove todo by id
+  Todo.findByIdAndRemove(id).then(todo => {
+    // success
+      if(!todo) {
+        // if no doc, send 404
+        return res.status(404).send()
+      } 
+      // if doc, send doc back with 200
+      res.status(200).send({todo})
+  }).catch(e => {
+    // error
+      // 400 with empty body
+    res.status(400).send()
+  })
 })
 
 app.listen(port, () => {
