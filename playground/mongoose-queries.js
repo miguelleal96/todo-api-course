@@ -35,5 +35,5 @@ User.findById(userID).then(user => {
     return console.log('User not found')
   }
   console.log('User fetched', JSON.stringify(user, null, 2))
-}).catch(e => console.log(e))
+}).catch(e => console.log("Promise rejected"))
 

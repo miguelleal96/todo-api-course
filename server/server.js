@@ -37,7 +37,7 @@ app.get('/todos/:id', (req, res) => {
   // valid id using isValid
     //404 - send back empty send
   if(!ObjectID.isValid(id)){
-    console.log('Id is not valid')
+    //console.log('Id is not valid')
     res.status(404).send()
   }
   //findById
@@ -45,7 +45,7 @@ app.get('/todos/:id', (req, res) => {
       // success
       // if no todo - send back 404 with empty body
       if(!todo) {
-        console.log('no todo found')
+        //console.log('no todo found')
         return res.status(404).send()
       }
       // if todo - send it back
@@ -54,8 +54,8 @@ app.get('/todos/:id', (req, res) => {
       // error
         // 400 - and send empty body back
       res.status(400).send()
-      console.log('promise failed')
-      console.log(e)
+      //console.log('promise failed')
+      //console.log(e)
     })
 })
 
