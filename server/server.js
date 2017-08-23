@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const express = require('express')
 const bodyParser = require('body-parser')
 
@@ -81,6 +82,30 @@ app.delete('/todos/:id', (req, res) => {
       // 400 with empty body
     res.status(400).send()
   })
+})
+
+app.patch('/todos/:id', (req, res) => {
+  const id = req.params.id
+  /* Picks out the 'text' and 'completed' property from req.body 
+    to keep user from updating other properties like 'completedAt'*/
+  const body = _.pick(req.body, ['text', 'completed'])
+
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send()
+  }
+
+  // Sets the 'completedAt' property
+  if (_.isBoolean(body.completed) && body.completed) {
+    body.completedAt = new Date().getTime()
+  } else {
+    body.completed = false
+    body.completedAt = null
+  }
+
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then(todo => {
+    if(!todo) return res.status(404).send()
+    res.send(todo)
+  }).catch(e => res.status(400).send())
 })
 
 app.listen(port, () => {
