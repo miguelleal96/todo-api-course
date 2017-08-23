@@ -187,16 +187,11 @@ describe('PATCH /todos/:id', () => {
     // 200
       .expect(200)
       .expect(res => {
-        // text is changed, completed is true, completedAt is a number .toBeA
-        //console.log(res)
+        // text is changed, completed false, completedAt is null .toNotExist
         expect(res.body.todo.text).toBe(text)
         expect(res.body.todo.completed).toBe(false)
         expect(res.body.todo.completeAt).toNotExist()
       })
       .end(done)
-    // grab id of second todo item
-    // update text, set completed to false
-    // 200
-    // text is changed, completed false, completedAt is null .toNotExist
   })
 })
