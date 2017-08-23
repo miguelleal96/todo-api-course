@@ -6,12 +6,14 @@ const {ObjectID} = require('mongodb')
 const {app} = require('./../server')
 const {Todo} = require('./../models/todo')
 
-const todos = [{
+let todos = [{
   _id: new ObjectID(), 
 	text: 'First test todo'
 }, {
   _id: new ObjectID(),
-	text: 'Secod test todo'
+  text: 'Secod test todo',
+  completed: true,
+  completedAt: 333
 }]
 
 /* lifecycle hook (code that runs before each test case) */
@@ -22,6 +24,7 @@ beforeEach(done => {
   }).then(() => done()) 
 })
 
+/* Test POST /todos ---------*/
 describe('POST /todos', () => {
   it('should create a new todo', (done) => {
     const text = 'Test todo text'
@@ -65,6 +68,7 @@ describe('POST /todos', () => {
   })
 })
 
+/* Test GET /todos ---------*/
 describe('GET /todos', () => [
 	it('should get all todos', (done) => {
 		request(app)
@@ -77,6 +81,7 @@ describe('GET /todos', () => [
 	})
 ])
 
+/* Test GET /todos/:id ---------*/
 describe('GET /todos/:id', () => {
   it('should return todo doc', (done) => {
     request(app)
@@ -104,6 +109,7 @@ describe('GET /todos/:id', () => {
   })
 })
 
+/* Test DELETE ---------*/
 describe('DELETE /todos/:id', () => {
   it('should remove a todo', done => {
     const hexId = todos[1]._id.toHexString()
@@ -139,5 +145,58 @@ describe('DELETE /todos/:id', () => {
       .get('/todos/123')
       .expect(404)
       .end(done)
+  })
+})
+
+/* Test PATCH ---------*/
+describe('PATCH /todos/:id', () => {
+  it('should update the todo', done => {
+    const hexId = todos[0]._id.toHexString() 
+    const text ='This should be the new text'
+    // grab id of first item
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send({ /* Sends data to patch with */
+        // update text, set complete true
+        completed: true,
+        text
+      })
+    // 200
+      .expect(200)
+      .expect(res => {
+        // text is changed, completed is true, completedAt is a number .toBeA
+        //console.log(res)
+        expect(res.body.todo.text).toBe(text)
+        expect(res.body.todo.completed).toBe(true)
+        expect(res.body.todo.completedAt).toBeA('number')
+      })
+      .end(done)
+  })
+
+  it('should clear completedAt when todo is not completed', done => {
+    const hexId = todos[1]._id.toHexString() 
+    const text ='This should be the new text!!'
+    // grab id of first item
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .send({ /* Sends data to patch with */
+        // update text, set complete true
+        completed: false,
+        text
+      })
+    // 200
+      .expect(200)
+      .expect(res => {
+        // text is changed, completed is true, completedAt is a number .toBeA
+        //console.log(res)
+        expect(res.body.todo.text).toBe(text)
+        expect(res.body.todo.completed).toBe(false)
+        expect(res.body.todo.completeAt).toNotExist()
+      })
+      .end(done)
+    // grab id of second todo item
+    // update text, set completed to false
+    // 200
+    // text is changed, completed false, completedAt is null .toNotExist
   })
 })
