@@ -11,7 +11,7 @@ let todos = [{
 	text: 'First test todo'
 }, {
   _id: new ObjectID(),
-  text: 'Secod test todo',
+  text: 'Second test todo',
   completed: true,
   completedAt: 333
 }]
