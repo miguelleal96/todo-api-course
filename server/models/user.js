@@ -56,6 +56,7 @@ UserSchema.methods.toJSON = function() {
 /* "methods" on mongoose.Schema is an object */
 /* custom method to generate auth token for new user */
 UserSchema.methods.generateAuthToken = function() {
+  // this === the individual document
   const user = this
   const access = 'auth'
   const token = jwt.sign({
@@ -68,6 +69,34 @@ UserSchema.methods.generateAuthToken = function() {
   return user.save().then(() => {
     /* return "token" to chain promise on to this method */
     return token 
+  })
+}
+
+/*
+ UserSchema.statics is similar to 'methods' but allows
+ us to create model methods instead of instance methods
+*/
+UserSchema.statics.findByToken = function(token) {
+  // this === to the model
+  const User = this
+  let decoded
+
+  try {
+    decoded = jwt.verify(token, 'abc123')
+  } catch(e) {
+    /* 
+      return a rejected promise if token verification fails
+    */
+    // return new Promise((res, rej) => {
+    //   rej()
+    // })
+    return Promise.reject()
+  }
+
+  return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
   })
 }
 
