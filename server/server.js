@@ -119,7 +119,7 @@ app.post('/users', (req, res) => {
     .then(() => {
       return user.generateAuthToken()
     })
-    /* send the token back as a header */
+    /* send the token back as a header on the response*/
     .then(token => {
       res.header('x-auth', token).send(user)
     })
