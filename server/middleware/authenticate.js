@@ -4,7 +4,7 @@ const {User} = require('./../models/user')
   middleware to authenticate routes
 */
 const authenticate = (req, res, next) => {
-  // get the header from client
+  // get the token from the header of the request
   const token = req.header('x-auth')
 
   User.findByToken(token).then(user => {
