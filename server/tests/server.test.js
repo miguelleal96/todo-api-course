@@ -227,7 +227,7 @@ describe('POST /users', () => {
       })
       .end((err) => {
         if(err) return done(err)
-          // check if the user is in the database
+        // check if the user is in the database
         User.findOne({email}).then(user => {
           expect(user).toExist()
           // check if the passwords are getting hashed
@@ -297,6 +297,23 @@ describe('POST /users/login', () => {
       .end((err, res) => {
         if(err) return done(err)
         User.findById(users[1]._id).then(user => {
+          expect(user.tokens.length).toBe(0)
+          done()
+        }).catch(e => done(e))
+      })
+  })
+})
+
+describe('DELETE /users/me/token', () => {
+  it('should remove auth token on logout', done => {
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .end((err, res) => {
+        if(err) return done(err)
+
+        User.findById(users[0]._id).then(user => {
           expect(user.tokens.length).toBe(0)
           done()
         }).catch(e => done(e))
