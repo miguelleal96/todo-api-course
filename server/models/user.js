@@ -73,6 +73,17 @@ UserSchema.methods.generateAuthToken = function() {
   })
 }
 
+/* remove token for logout */
+UserSchema.methods.removeToken = function(token) {
+  const user = this
+
+  return user.update({
+    $pull: {
+      tokens: {token}
+    }
+  })
+}
+
 /* ---- Mongoose Model Methods ---- */
 
 /*

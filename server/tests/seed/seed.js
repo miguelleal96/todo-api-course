@@ -16,10 +16,10 @@ const users = [{
     access: 'auth',
     token: jwt.sign({_id: userOneId, access: 'auth'}, 'abc123').toString()
   }]
-}, {
-  _id: userTwoId,
-  email: 'leal123@gmail.com',
-  password: 'userTwoPass'
+  },{
+    _id: userTwoId,
+    email: 'leal123@gmail.com',
+    password: 'userTwoPass'
 }]
 
 let todos = [{
