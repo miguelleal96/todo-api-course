@@ -9,6 +9,7 @@ const authenticate = (req, res, next) => {
 
   User.findByToken(token).then(user => {
     if (!user) return Promise.reject()
+    // populate the req object with the user and token info
     req.user = user
     req.token = token
     next()
@@ -16,5 +17,5 @@ const authenticate = (req, res, next) => {
     res.status(401).send()
   })
 }
-
+ 
 module.exports = {authenticate}
